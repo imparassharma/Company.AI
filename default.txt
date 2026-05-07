@@ -1,0 +1,164 @@
+pcsk_3iLAe2_6pYWospggwgkUMm1DnZY5pUeDTqMHWGvizpzohGRZPPfUDzFCMrtQ6UsVcivj1w
+
+
+//openai verison
+import dotenv from "dotenv";
+dotenv.config();
+import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
+import { OpenAIEmbeddings } from "@langchain/openai"; // Use this instead of the raw OpenAI client
+import { PineconeStore } from "@langchain/pinecone";
+import { Pinecone as PineconeClient } from "@pinecone-database/pinecone";
+
+const embeddings = new OpenAIEmbeddings({
+  model: "text-embedding-3-small", //API keys are getting fetched from .env by default
+});
+
+const pinecone = new PineconeClient({
+  apiKey: process.env.PINECONE_API_KEY,
+});
+const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX_NAME);
+
+const vectorStore = new PineconeStore(embeddings, {
+  pineconeIndex,
+  maxConcurrency: 5,
+});
+
+console.log(vectorStore);
+
+export async function indexTheDoc(filepath) {
+  // 1. Load PDF
+  const loader = new PDFLoader(filepath, { splitPages: false });
+  const docs = await loader.load();
+  console.log("✅ PDF loaded");
+
+  // 2. Split text
+  const splitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 300,
+    chunkOverlap: 100,
+  });
+  const splitDocs = await splitter.splitDocuments(docs);
+  console.log("✅ Chunks created:", splitDocs.length);
+  await vectorStore.addDocuments(splitDocs);
+
+  console.log("🎉 Successfully indexed all chunks to Pinecone!");
+
+  return { success: true, count: splitDocs.length };
+}
+
+///
+import 'dotenv/config';
+import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
+import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
+import { PineconeStore } from "@langchain/pinecone";
+import { Pinecone as PineconeClient } from "@pinecone-database/pinecone";
+
+// 1. Initialize Ollama Embeddings
+// This connects to the HuggingFace server 
+
+const embeddings = new HuggingFaceInferenceEmbeddings({
+  apiKey: process.env.HUGGINGFACE_API_KEY,
+  model: "sentence-transformers/all-MiniLM-L6-v2", 
+  provider: "hf-inference",
+});
+
+
+
+const pinecone = new PineconeClient({
+  apiKey: process.env.PINECONE_API_KEY,
+});
+
+const pineconeIndex = pinecone.Index("rag-companychat");
+
+
+export async function indexTheDoc(filepath) {
+  
+  try {
+    const loader = new PDFLoader(filepath, { splitPages: false });
+    const docs = await loader.load();
+    console.log("✅ PDF loaded");
+
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 500,
+      chunkOverlap: 100,
+    });
+    
+    const splitDocs = await splitter.splitDocuments(docs);
+    console.log(`✅ Chunks created: ${splitDocs.length}`);
+
+    console.log("⏳ Generating embeddings via HuggingFace...");
+    await PineconeStore.fromDocuments(
+      splitDocs,
+      embeddings,
+      {
+        pineconeIndex,
+      }
+    );
+
+    console.log("🎉 Successfully indexed to Pinecone using HuggingFace!");
+  } catch (error) {
+    console.error("❌ Indexing failed:", error);
+  }
+}
+
+
+
+
+//Final
+import OpenAI from "openai";
+import "dotenv/config";
+import readline from "node:readline/promises";
+import {vectorStore} from "./doc.js"
+
+const client = new OpenAI({
+  apiKey: process.env.GROQ_API_KEY,
+  baseURL: "https://api.groq.com/openai/v1",
+});
+
+export async function chat() {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  while (true) {
+    const question = await rl.question("You: ");
+
+    if (question == "/bye") {
+      break;
+    }
+    ,
+
+    const relevantChunks = await vectorStore.similaritySearch(question,1);
+    const context = relevantChunks.map(chunk => chunk.pageContent).join('\n\n');
+
+
+    const SYSTEM_PROMPT = "You are an assistant for question-answering tasks. Use the given relevant pieces of retrieved context to answer the question. If you don't know the answer say I don't know"
+    
+
+    const userquery = `Question: ${question}
+    Relevant context : ${context}
+    Answer:`
+    
+    const Completion = await client.chat.completions.create({
+        "messages": [
+            {
+                "role" : "system",
+                'content' : SYSTEM_PROMPT
+            },
+            {
+            "role": "user",
+            "content": userquery
+            }
+        ],
+        "model": "openai/gpt-oss-120b",
+        "temperature": 1
+    })
+    console.log(`Assistant : ${Completion.choices[0].message.content}`);
+    return Completion.choices[0].message.content;
+}
+
+  rl.close();
+}
+
