@@ -30,7 +30,7 @@ function App() {
   }, []);
 
   const previewPdf = () => {
-    window.open("https://drive.google.com/file/d/1XokS_brYHFaa9ejzuc7H5UtpRoNJkV6j/view?usp=sharing", "_blank");
+    window.open("https://drive.google.com/file/d/1XokS_brYHFaa9ejzuc7H5UtpRoNJkV6j/view", "_blank");
   };
 
   const handleAsk = async () => {
