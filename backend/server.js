@@ -5,7 +5,11 @@ const app = express();
 import path from "path";
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://companychat-ai.web.app",
+  })
+);
 app.use(express.json());
 app.use(express.static(path.join(process.cwd(), "../public")));
 console.log("Serving from:",path.join(process.cwd(), "../public"));

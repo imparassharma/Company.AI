@@ -30,7 +30,7 @@ function App() {
   }, []);
 
   const previewPdf = () => {
-    window.open("http://localhost:3000/document.pdf", "_blank");
+    window.open("https://drive.google.com/file/d/1XokS_brYHFaa9ejzuc7H5UtpRoNJkV6j/view?usp=sharing", "_blank");
   };
 
   const handleAsk = async () => {
@@ -40,7 +40,7 @@ function App() {
       setLoading(true);
       setAnswer("");
 
-      const res = await fetch("http://localhost:3000/api/chat", {
+      const res = await fetch("https://company-ai.onrender.com/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
