@@ -5,12 +5,13 @@ function App() {
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ✨ Typewriter state
   const [displayText, setDisplayText] = useState("");
   const [doneTyping, setDoneTyping] = useState(false);
 
-  const fullText = "Company.AI is an agentic AI assistant designed to help users quickly find answers from company documents. Instead of manually searching through PDFs or reports, users can simply ask a question in natural language, and the system provides a clear, relevant answer. Behind the scenes, Company.AI uses a Retrieval-Augmented Generation (RAG) approach—first retrieving the most relevant sections from the company’s documents, then using an AI model to generate a precise response based on that context. In simple terms, Company.AI acts like a smart assistant that reads your company documents and gives you exactly the information you need, instantly"
-  // ✨ Typewriter effect
+  const fullText =
+    "Company.AI is an agentic AI assistant that helps users instantly find answers from company documents using advanced RAG-based AI retrieval.";
+
+  // ✨ Typewriter Effect
   useEffect(() => {
     let i = 0;
 
@@ -23,16 +24,21 @@ function App() {
           clearInterval(interval);
           setDoneTyping(true);
         }
-      }, 50);
-    }, 100); // slight delay
+      }, 20);
+    }, 200);
 
     return () => clearTimeout(timeout);
   }, []);
 
+  // 📄 PDF Preview
   const previewPdf = () => {
-    window.open("https://drive.google.com/file/d/1XokS_brYHFaa9ejzuc7H5UtpRoNJkV6j/view", "_blank");
+    window.open(
+      "https://drive.google.com/file/d/1XokS_brYHFaa9ejzuc7H5UtpRoNJkV6j/view?usp=sharing",
+      "_blank"
+    );
   };
 
+  // 🤖 Ask AI
   const handleAsk = async () => {
     if (!question.trim()) return;
 
@@ -40,15 +46,19 @@ function App() {
       setLoading(true);
       setAnswer("");
 
-      const res = await fetch("https://company-ai.onrender.com/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ question }),
-      });
+      const res = await fetch(
+        "https://company-ai.onrender.com/api/chat",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ question }),
+        }
+      );
 
       const data = await res.json();
+
       setAnswer(data.answer);
     } catch (err) {
       console.error("Error:", err);
@@ -59,71 +69,191 @@ function App() {
   };
 
   return (
-    <div className="relative min-h-screen flex">
-      {/* 🌄 Background Image */}
-      <div className="absolute inset-0 bg-[url('../frontend/bg.jpg')] bg-cover bg-center"></div>
+    <div
+      className="relative min-h-screen overflow-hidden bg-black select-none"
+      onCopy={(e) => e.preventDefault()}
+      onCut={(e) => e.preventDefault()}
+      onContextMenu={(e) => e.preventDefault()}
+    >
+      {/* 🌌 Background */}
+      <div className="absolute inset-0 bg-[url('../frontend/bgdark.png')]  "></div>
+      {/* 🌑 Dark Overlay */}
+   
 
-      {/* LEFT PANEL */}
-      <div className="w-[30%] gap-2 z-10 flex flex-col items-center justify-center text-2xl bg-black/25 backdrop-blur-md shadow-xl shadow-black">
-        <div className="absolute top-8 text-3xl text-white px-4 py-2 shadow-3xl shadow-black">
-          Company.Ai
-        </div>
-
-        <div className="p-5">
-          <p className="text-white text-xl leading-relaxed text-center">
-            {displayText}
-            {!doneTyping && <span className="animate-pulse">|</span>}
-          </p>
-        </div>
+      {/* ✨ Shooting Stars */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="shooting-star star1"></div>
+        <div className="shooting-star star2"></div>
+        <div className="shooting-star star3"></div>
+        <div className="shooting-star star4"></div>
       </div>
 
-      {/* RIGHT PANEL */}
-      <div className="w-[70%] z-10 flex items-center justify-center">
-        <div className="flex flex-col items-center justify-center min-h-screen gap-16 px-4">
-          {/* 🔤 Heading */}
-          <h1 className="text-2xl md:text-6xl tracking-wide text-white drop-shadow-[0_10px_15px_rgba(0,0,0,0.9)]">
-            Ask anything!
-          </h1>
-          {/* 📄 Preview Button */}
-          <div
+      {/* MAIN CONTENT */}
+      <div className="relative z-10 flex flex-col md:flex-row min-h-screen">
+
+        {/* LEFT PANEL */}
+        <div className="w-full h-[40vh] md:h-auto md:w-[30%] flex flex-col justify-center items-center px-5 py-6 md:px-8 md:py-12 bg-white/5 backdrop-blur-xl border-r border-white/10">
+
+          {/* Logo */}
+          <div className="mb-4 md:mb-8">
+            <h1 className="text-3xl md:text-4xl font-semibold tracking-wide text-white">
+              Company.AI
+            </h1>
+          </div>
+
+          {/* Description */}
+          <div className="max-w-65 md:max-w-sm flex flex-col items-center justify-center">
+            <p className="text-white/80 text-xs sm:text-sm md:text-lg leading-relaxed text-center">
+              {displayText}
+              {!doneTyping && (
+                <span className="animate-pulse">|</span>
+              )}
+            </p>
+          </div>
+
+          {/* PDF Button */}
+          <button
             onClick={previewPdf}
-            className="absolute bottom-6 right-8 text-white px-4 py-2 shadow-2xl shadow-black hover:bg-white/90 hover:text-black bg-white/10 backdrop-blur-md border border-white/20 rounded-lg transition cursor-pointer"
+            className="mt-5 px-5 py-3 rounded-xl border border-white/10 bg-white/10 backdrop-blur-xl text-white hover:bg-white hover:text-black transition-all duration-300 shadow-[0_0_25px_rgba(255,255,255,0.08)]"
           >
             Preview PDF
-          </div>
+          </button>
+        </div>
 
-          {/* 💬 Chat Section */}
-          <div className="flex flex-col items-center gap-4 w-full">
+        {/* RIGHT PANEL */}
+        <div className="w-full h-[60vh] md:h-auto md:w-[70%] flex items-center justify-center px-4 py-8 md:py-0">
+
+          <div className="w-full max-w-3xl flex flex-col items-center gap-8 md:gap-10">
+
+            {/* Heading */}
+            <h1 className="text-4xl sm:text-5xl md:text-7xl text-center text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.35)]">
+              Ask anything!
+            </h1>
+
             {/* ✨ Glass Input */}
-            <div className="flex w-full max-w-xl bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl overflow-hidden shadow-2xl hover:shadow-3xl transition">
-              <input
-                type="text"
-                placeholder="Ask something..."
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                className="flex-1 w-5xl p-4 bg-transparent text-white placeholder-white outline-none shadow-xl"
-              />
+            <div className="relative w-full overflow-hidden rounded-2xl border border-white/20 bg-white/10 backdrop-blur-2xl shadow-[0_0_35px_rgba(255,255,255,0.08)]">
 
-              <button
-                onClick={handleAsk}
-                className="px-6 text-black bg-white/40 hover:bg-white/90 cursor-pointer transition"
-              >
-                Ask
-              </button>
+              {/* ✨ Shine Effect */}
+              <div className="absolute inset-0 shine pointer-events-none"></div>
+
+              <div className="flex flex-col sm:flex-row">
+
+                <input
+                  type="text"
+                  placeholder="Ask something..."
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleAsk();
+                    }
+                  }}
+                  className="flex-1 px-5 py-4 md:py-5 bg-transparent text-white placeholder-white/50 outline-none text-base md:text-lg"
+                />
+
+                <button
+                  onClick={handleAsk}
+                  className="px-8 py-4 bg-white/80 hover:bg-white text-black font-medium transition-all duration-300"
+                >
+                  Ask
+                </button>
+
+              </div>
             </div>
 
-            {/* ⏳ Loading */}
-            {loading && <p className="text-white animate-pulse">Thinking...</p>}
+            {/* Loading */}
+            {loading && (
+              <p className="text-white animate-pulse">
+                Thinking...
+              </p>
+            )}
 
-            {/* 📩 Answer */}
+            {/* Answer */}
             {answer && (
-              <div className="max-w-xl w-full bg-white/10 backdrop-blur-md border border-white/10 p-4 rounded-xl">
-                <p className="text-white">{answer}</p>
+              <div className="w-full rounded-2xl border border-white/10 bg-white/10 backdrop-blur-xl p-5 shadow-2xl">
+                <p className="text-white whitespace-pre-wrap leading-relaxed">
+                  {answer}
+                </p>
               </div>
             )}
+
           </div>
         </div>
       </div>
+
+      {/* ✨ Custom CSS */}
+      <style jsx>{`
+        .shooting-star {
+          position: absolute;
+          width: 2px;
+          height: 120px;
+          background: linear-gradient(to bottom, white, transparent);
+          opacity: 0.8;
+          transform: rotate(45deg);
+          animation: shooting 6s linear infinite;
+        }
+
+        .star1 {
+          top: 10%;
+          left: 20%;
+          animation-delay: 0s;
+        }
+
+        .star2 {
+          top: 0%;
+          left: 70%;
+          animation-delay: 2s;
+        }
+
+        .star3 {
+          top: 20%;
+          left: 90%;
+          animation-delay: 4s;
+        }
+
+        .star4 {
+          top: 5%;
+          left: 50%;
+          animation-delay: 1s;
+        }
+
+        @keyframes shooting {
+          0% {
+            transform: translateY(0) translateX(0) rotate(45deg);
+            opacity: 0;
+          }
+
+          10% {
+            opacity: 1;
+          }
+
+          100% {
+            transform: translateY(900px) translateX(-900px) rotate(45deg);
+            opacity: 0;
+          }
+        }
+
+        .shine {
+          background: linear-gradient(
+            120deg,
+            transparent 20%,
+            rgba(255, 255, 255, 0.12) 40%,
+            transparent 60%
+          );
+
+          animation: shineMove 4s linear infinite;
+        }
+
+        @keyframes shineMove {
+          0% {
+            transform: translateX(-100%);
+          }
+
+          100% {
+            transform: translateX(100%);
+          }
+        }
+      `}</style>
     </div>
   );
 }
