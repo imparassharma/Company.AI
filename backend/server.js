@@ -2,17 +2,18 @@ import express from "express";
 import cors from "cors";
 import { Chat } from "./chat.js"
 const app = express();
-import path from "path";
+//import path from "path";
 
 // Middleware
 app.use(
   cors({
     origin: "https://companychat-ai.web.app",
+     methods: ["GET", "POST"],
   })
 );
 app.use(express.json());
-app.use(express.static(path.join(process.cwd(), "../public")));
-console.log("Serving from:",path.join(process.cwd(), "../public"));
+// app.use(express.static(path.join(process.cwd(), "../public")));   //offline use
+// console.log("Serving from:",path.join(process.cwd(), "../public"));
 
 // API route
 app.post("/api/chat", async (req, res) => {
