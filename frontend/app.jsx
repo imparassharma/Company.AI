@@ -85,18 +85,18 @@ function App() {
       {/* On mobile: column layout, full screen height, no overflow on outer container */}
       <div className="relative z-10 flex flex-col md:flex-row h-screen">
 
-        {/* LEFT PANEL — fixed height on mobile, auto on desktop */}
-        <div className="w-full shrink-0 md:h-auto md:w-[30%] flex flex-col justify-center items-center px-5 py-6 md:px-8 md:py-12 bg-white/5 backdrop-blur-xl border-b md:border-b-0 md:border-r border-white/10">
+        {/* LEFT PANEL — fixed height on mobile so typewriter never causes layout shift */}
+        <div className="w-full h-[260px] shrink-0 md:h-auto md:w-[30%] flex flex-col justify-center items-center px-5 md:px-8 md:py-12 bg-white/5 backdrop-blur-xl border-b md:border-b-0 md:border-r border-white/10">
 
           {/* Logo */}
-          <div className="mb-3 md:mb-8">
+          <div className="mb-2 md:mb-8">
             <h1 className="text-3xl md:text-4xl font-semibold tracking-wide text-white">
               Company.AI
             </h1>
           </div>
 
-          {/* Description */}
-          <div className="max-w-xs md:max-w-sm flex flex-col items-center justify-center">
+          {/* Description — fixed height on mobile so typewriter growth doesn't shift layout */}
+          <div className="h-[88px] md:h-auto w-full max-w-xs md:max-w-sm flex items-start justify-center md:items-center overflow-hidden">
             <p className="text-white/80 text-sm md:text-lg leading-relaxed text-center">
               {displayText}
               {!doneTyping && <span className="animate-pulse">|</span>}
@@ -106,7 +106,7 @@ function App() {
           {/* PDF Button */}
           <button
             onClick={previewPdf}
-            className="mt-4 md:mt-5 px-5 py-3 rounded-xl border border-white/10 bg-white/10 backdrop-blur-xl text-white hover:bg-white hover:text-black transition-all duration-300 shadow-[0_0_25px_rgba(255,255,255,0.08)]"
+            className="mt-3 md:mt-5 px-5 py-2.5 md:py-3 rounded-xl border border-white/10 bg-white/10 backdrop-blur-xl text-white hover:bg-white hover:text-black transition-all duration-300 shadow-[0_0_25px_rgba(255,255,255,0.08)]"
           >
             Preview PDF
           </button>
