@@ -28,7 +28,7 @@
     "eventemitter3": "^4.0.7",
     "express": "^5.2.1",
     "js-tiktoken": "^1.0.21",
-    "langsmith": "^0.5.16",
+    "langsmith": "^0.5.26",
     "mustache": "^4.2.0",
     "openai": "^6.33.0",
     "p-finally": "^1.0.0",
