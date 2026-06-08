@@ -33,8 +33,8 @@ function App() {
   // 📄 PDF Preview
   const previewPdf = () => {
     window.open(
-      "https://drive.google.com/file/d/1XokS_brYHFaa9ejzuc7H5UtpRoNJkV6j/view?usp=sharing",
-      "_blank"
+      "https://drive.google.com/file/d/1XokS_brYHFaa9ejzuc7H5UtpRoNJkV6j/view?usp=drive_link",
+      "_blank",
     );
   };
 
@@ -46,7 +46,7 @@ function App() {
       setLoading(true);
       setAnswer("");
 
-      const res = await fetch("http://localhost:3600/chat", {
+      const res = await fetch("https://company-ai.onrender.com/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -84,10 +84,8 @@ function App() {
       {/* MAIN CONTENT */}
       {/* On mobile: column layout, full screen height, no overflow on outer container */}
       <div className="relative z-10 flex flex-col md:flex-row h-screen">
-
         {/* LEFT PANEL — fixed height on mobile so typewriter never causes layout shift */}
         <div className="w-full h-[260px] shrink-0 md:h-auto md:w-[30%] flex flex-col justify-center items-center px-5 md:px-8 md:py-12 bg-white/5 backdrop-blur-xl border-b md:border-b-0 md:border-r border-white/10">
-
           {/* Logo */}
           <div className="mb-2 md:mb-8">
             <h1 className="text-3xl md:text-4xl font-semibold tracking-wide text-white">
@@ -114,7 +112,6 @@ function App() {
 
         {/* RIGHT PANEL — takes remaining height, scrolls internally */}
         <div className="flex-1 flex flex-col min-h-0 md:w-[70%]">
-
           {/* 
             Mobile: input pinned at top (shrink-0), answer scrolls below.
             Desktop: entire content centered via justify-center on a scrollable column.
@@ -122,7 +119,6 @@ function App() {
 
           {/* Mobile layout */}
           <div className="flex flex-col min-h-0 flex-1 md:hidden">
-
             {/* Input — pinned top on mobile */}
             <div className="shrink-0 flex flex-col items-center gap-4 px-4 pt-8 pb-4">
               <h1 className="text-4xl sm:text-5xl text-center text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.35)]">
@@ -137,7 +133,9 @@ function App() {
                     placeholder="Ask something..."
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter") handleAsk(); }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleAsk();
+                    }}
                     className="flex-1 px-5 py-4 bg-transparent text-white placeholder-white/50 outline-none text-base"
                   />
                   <button
@@ -152,10 +150,14 @@ function App() {
 
             {/* Answer — scrollable below input on mobile */}
             <div className="flex-1 overflow-y-auto px-4 pb-6 flex flex-col items-center gap-4">
-              {loading && <p className="text-white animate-pulse mt-2">Thinking...</p>}
+              {loading && (
+                <p className="text-white animate-pulse mt-2">Thinking...</p>
+              )}
               {answer && (
                 <div className="w-full max-w-3xl rounded-2xl border border-white/10 bg-white/10 backdrop-blur-xl p-5 shadow-2xl">
-                  <p className="text-white whitespace-pre-wrap leading-relaxed">{answer}</p>
+                  <p className="text-white whitespace-pre-wrap leading-relaxed">
+                    {answer}
+                  </p>
                 </div>
               )}
             </div>
@@ -164,7 +166,6 @@ function App() {
           {/* Desktop layout — centered, scrollable */}
           <div className="hidden md:flex flex-col flex-1 overflow-y-auto">
             <div className="flex flex-col items-center justify-center min-h-full gap-10 px-8 py-12">
-
               <h1 className="text-7xl text-center text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.35)]">
                 Ask anything!
               </h1>
@@ -177,7 +178,9 @@ function App() {
                     placeholder="Ask something..."
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter") handleAsk(); }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleAsk();
+                    }}
                     className="flex-1 px-5 py-5 bg-transparent text-white placeholder-white/50 outline-none text-lg"
                   />
                   <button
@@ -189,22 +192,24 @@ function App() {
                 </div>
               </div>
 
-              {loading && <p className="text-white animate-pulse">Thinking...</p>}
+              {loading && (
+                <p className="text-white animate-pulse">Thinking...</p>
+              )}
 
               {answer && (
                 <div className="w-full max-w-3xl rounded-2xl border border-white/10 bg-white/10 backdrop-blur-xl p-5 shadow-2xl">
-                  <p className="text-white whitespace-pre-wrap leading-relaxed">{answer}</p>
+                  <p className="text-white whitespace-pre-wrap leading-relaxed">
+                    {answer}
+                  </p>
                 </div>
               )}
-
             </div>
           </div>
-
         </div>
       </div>
 
       {/* ✨ Custom CSS */}
-      <style jsx>{`
+      <style>{`
         .shooting-star {
           position: absolute;
           width: 2px;

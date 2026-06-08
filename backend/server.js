@@ -16,7 +16,7 @@ app.use(express.json());
 // console.log("Serving from:",path.join(process.cwd(), "../public"));
 
 // API route
-app.post("/api/chat", async (req, res) => {
+app.post("/chat", async (req, res) => {
   try {
     const { question } = req.body;
 
