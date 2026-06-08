@@ -9,9 +9,9 @@ const client = new OpenAI({
 
 export async function Chat(question) {
   console.log({
-  tracing: process.env.LANGCHAIN_TRACING_V2,
-  project: process.env.LANGCHAIN_PROJECT,
-  hasKey: !!process.env.LANGCHAIN_API_KEY,
+  tracing: process.env.LANGSMITH_TRACING,
+  project: process.env.LANGSMITH_PROJECT,
+  hasKey: !!process.env.LANGSMITH_API_KEY,
 });
   const relevantChunks = await vectorStore.similaritySearch(question, 1);
   const context = relevantChunks.map((chunk) => chunk.pageContent).join("\n\n");
