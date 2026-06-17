@@ -46,7 +46,7 @@ function App() {
       setLoading(true);
       setAnswer("");
 
-      const res = await fetch("https://company-ai.onrender.com/chat", {
+      const res = await fetch("https://company-ai-qpxl.onrender.com", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
